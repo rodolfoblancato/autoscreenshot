@@ -1,7 +1,7 @@
 import subprocess
 from PIL import Image, ImageDraw
 
-'''Funções '''
+''' Adiciona uma margem à imagem '''
 def add_margin(pil_img, top, right, bottom, left, color):
     width, height = pil_img.size
     new_width = width + right + left
@@ -10,16 +10,23 @@ def add_margin(pil_img, top, right, bottom, left, color):
     result.paste(pil_img, (left, top))
     return result
 
-''' Passo 1 - Ler o arquivo txt com a lista de sites'''
+''' Gera um screenshot do site'''
+def create_screenshot(website, output_file):
+	print('Fazendo screenshot do site 1')
+	subprocess.call('"C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --screenshot="' + output_file + '" --hide-scrollbars --window-size=1366,2000 "' + website + '"')
+	print('Criado screenshot do site 1')
 
-''' Passo 2 - Gerar os screenshots'''
 
-website = '"https://www.folha.uol.com.br/"'
-output_file = '"C:/Users/rodol/Downloads/print_01.png"'
-subprocess.call('"C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --screenshot=' + output_file + ' --hide-scrollbars --window-size=1366,2000 ' + website)
+''' Insere data e hora nos screenshots''' 
+def create_header(screenshot_file):
+	with Image.open(screenshot_file) as im:
+		print('Gerando cabeçalho do screenshot 1')
+		im_new = add_margin(im, 100, 0, 0, 0, (255, 255, 255))
+		im_new.save('C:/Users/rodol/Downloads/print_edit_01.png', quality=95)
+		print('Finalizado cabeçalho do screenshot 1')
 
-''' Passo 3 - Inserir data e hora nos screenshots''' 
-
-with Image.open("C:/Users/rodol/Downloads/print_01.png") as im:
-	im_new = add_margin(im, 0, 0, 100, 0, (0, 0, 0))
-	im_new.save('C:/Users/rodol/Downloads/print_rodape_01.png', quality=95)
+''' Ler o arquivo txt com a lista de sites e chamar as funções'''
+website = 'https://www.folha.uol.com.br/'
+file_path = 'C:/Users/rodol/Downloads/print_01.png'
+create_screenshot(website, file_path)
+create_header(file_path)
