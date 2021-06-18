@@ -1,5 +1,6 @@
 import subprocess
 from PIL import Image, ImageDraw, ImageFont
+from datetime import datetime
 
 ''' Adiciona uma margem à imagem'''
 def add_margin(pil_img, top, right, bottom, left, color):
@@ -13,7 +14,7 @@ def add_margin(pil_img, top, right, bottom, left, color):
 ''' Gera um screenshot do site'''
 def create_screenshot(website, output_path, file_name, counter):
 	attempt_counter = 1
-	number_of_attempts = 5
+	number_of_attempts = 20
 	while attempt_counter < number_of_attempts + 1:
 		print('Gerando screenshot do site ' + str(counter) + '. Tentativa ' + str(attempt_counter) + ' de ' + str(number_of_attempts))
 		subprocess.call('"C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --screenshot="' + output_path + file_name + '" --hide-scrollbars --window-size=1366,2000 "' + website + '"')
@@ -25,14 +26,20 @@ def create_screenshot(website, output_path, file_name, counter):
 		except:
 			pass
 
-''' Insere data e hora nos screenshots''' 
-def create_header(website, output_path, file_name, counter, text_font):
+''' Cria um cabeçalho e insere data e hora nos screenshots''' 
+def create_header(website, output_path, file_name, counter):
 	try:
 		with Image.open(output_path + file_name) as im:
 			print('Gerando cabeçalho do screenshot ' + str(counter))
 			new_name = 'edit_' + file_name
-			im_new = add_margin(im, 100, 0, 0, 0, (200, 200, 200))
-			im_new.save(output_path + new_name, quality=95)
+			im_with_header = add_margin(im, 80, 0, 0, 0, (220, 220, 220))
+			im_edit = ImageDraw.Draw(im_with_header)
+			date_now = datetime.now()
+			date_text = date_now.strftime('%d/%m/%Y %H:%M')
+			header_text = 'Website: ' + website + '\nData e hora do acesso: ' + date_text
+			font = ImageFont.truetype('arial.ttf', 16)
+			im_edit.multiline_text((10,10), header_text, (0, 0, 0), font=font)
+			im_with_header.save(output_path + new_name, quality=95)
 			print('Finalizado cabeçalho do screenshot ' + str(counter))
 	except:
 		print('Falha ao gerar o screenshot do site ' + str(counter))
@@ -57,15 +64,13 @@ def loop_websites(websites_list):
 			zeroes = ''
 		file_name = 'screenshot_' + zeroes + str(counter) + '.png'
 		create_screenshot(website, output_path, file_name, counter)
-		create_header(website, output_path, file_name, counter, text_font)
+		create_header(website, output_path, file_name, counter)
 		counter += 1
 
 output_path = 'C:/Users/rodol/Downloads/'
 input_file = input('Arquivo TXT com a lista de websites (deve ser incluído o caminho completo e a extensão):')
-try:
-	text_font = ImageFont.truetype('C:/Windows/Fonts/Arial.ttf', 10)
-except:
-	print('Problema ao carregar a fonte')
+if input_file.startswith('"'):
+	input_file = input_file[1:len(input_file)-1]
 websites = []
 with open(input_file) as websites_file:
 	for line in websites_file:
