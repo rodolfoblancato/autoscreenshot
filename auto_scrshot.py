@@ -12,10 +12,18 @@ def add_margin(pil_img, top, right, bottom, left, color):
 
 ''' Gera um screenshot do site'''
 def create_screenshot(website, output_path, file_name, counter):
-	print('Gerando screenshot do site ' + str(counter))
-	subprocess.call('"C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --screenshot="' + output_path + file_name + '" --hide-scrollbars --window-size=1366,2000 "' + website + '"')
-	print('Finalizado screenshot do site ' + str(counter))
-
+	attempt_counter = 1
+	number_of_attempts = 5
+	while attempt_counter < number_of_attempts + 1:
+		print('Gerando screenshot do site ' + str(counter) + '. Tentativa ' + str(attempt_counter) + ' de ' + str(number_of_attempts))
+		subprocess.call('"C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --screenshot="' + output_path + file_name + '" --hide-scrollbars --window-size=1366,2000 "' + website + '"')
+		attempt_counter += 1
+		try:
+			with Image.open(output_path + file_name) as im:
+				print('Finalizado screenshot do site ' + str(counter))
+				break
+		except:
+			pass
 
 ''' Insere data e hora nos screenshots''' 
 def create_header(website, output_path, file_name, counter, text_font):
