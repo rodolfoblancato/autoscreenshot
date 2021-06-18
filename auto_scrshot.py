@@ -12,9 +12,9 @@ def add_margin(pil_img, top, right, bottom, left, color):
 
 ''' Gera um screenshot do site'''
 def create_screenshot(website, output_path, file_name, counter):
-	print('Fazendo screenshot do site ' + str(counter))
+	print('Gerando screenshot do site ' + str(counter))
 	subprocess.call('"C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --screenshot="' + output_path + file_name + '" --hide-scrollbars --window-size=1366,2000 "' + website + '"')
-	print('Criado screenshot do site ' + str(counter))
+	print('Finalizado screenshot do site ' + str(counter))
 
 
 ''' Insere data e hora nos screenshots''' 
@@ -29,8 +29,17 @@ def create_header(output_path, file_name, counter):
 ''' Ler o arquivo txt com a lista de sites e chamar as funções'''
 def loop_websites(websites_list):
 	counter = 1
+	zeroes = ''
 	for website in websites_list:
-		file_name = 'screenshot_' + str(counter) + '.png'
+		if counter < 10:
+			zeroes = '000'
+		elif counter < 100:
+			zeroes = '00'
+		elif counter < 1000:
+			zeroes = '0'
+		else:
+			zeroes = ''
+		file_name = 'screenshot_' + zeroes + str(counter) + '.png'
 		create_screenshot(website, output_path, file_name, counter)
 		create_header(output_path, file_name, counter)
 		counter += 1
