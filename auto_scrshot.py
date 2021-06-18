@@ -1,5 +1,5 @@
 import subprocess
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 ''' Adiciona uma margem à imagem'''
 def add_margin(pil_img, top, right, bottom, left, color):
@@ -18,13 +18,21 @@ def create_screenshot(website, output_path, file_name, counter):
 
 
 ''' Insere data e hora nos screenshots''' 
-def create_header(output_path, file_name, counter):
-	with Image.open(output_path + file_name) as im:
-		print('Gerando cabeçalho do screenshot ' + str(counter))
-		new_name = 'edit_' + file_name
-		im_new = add_margin(im, 100, 0, 0, 0, (100, 100, 100))
-		im_new.save(output_path + new_name, quality=95)
-		print('Finalizado cabeçalho do screenshot ' + str(counter))
+def create_header(website, output_path, file_name, counter, text_font):
+	try:
+		with Image.open(output_path + file_name) as im:
+			print('Gerando cabeçalho do screenshot ' + str(counter))
+			new_name = 'edit_' + file_name
+			im_new = add_margin(im, 100, 0, 0, 0, (200, 200, 200))
+			im_new.save(output_path + new_name, quality=95)
+			print('Finalizado cabeçalho do screenshot ' + str(counter))
+	except:
+		print('Falha ao gerar o screenshot do site ' + str(counter))
+		print('Adicionando site ' + str(counter) + ' à lista de falhas (falhas.txt)')
+		with open (output_path + 'falhas.txt', 'a') as failures:
+			failures.write(website)
+		print('Site ' + str(counter) + ' adicionado à lista de falhas. Passando para o próximo site')
+		pass
 
 ''' Ler o arquivo txt com a lista de sites e chamar as funções'''
 def loop_websites(websites_list):
@@ -41,11 +49,15 @@ def loop_websites(websites_list):
 			zeroes = ''
 		file_name = 'screenshot_' + zeroes + str(counter) + '.png'
 		create_screenshot(website, output_path, file_name, counter)
-		create_header(output_path, file_name, counter)
+		create_header(website, output_path, file_name, counter, text_font)
 		counter += 1
 
 output_path = 'C:/Users/rodol/Downloads/'
 input_file = input('Arquivo TXT com a lista de websites (deve ser incluído o caminho completo e a extensão):')
+try:
+	text_font = ImageFont.truetype('C:/Windows/Fonts/Arial.ttf', 10)
+except:
+	print('Problema ao carregar a fonte')
 websites = []
 with open(input_file) as websites_file:
 	for line in websites_file:
