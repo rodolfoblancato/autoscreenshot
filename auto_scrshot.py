@@ -67,10 +67,8 @@ def loop_websites(websites_list):
 		create_header(website, output_path, file_name, counter)
 		counter += 1
 
-output_path = input('Pasta em que serão salvos os screenshots:')
+output_path = 'C:/Users/rodol/Downloads/'
 input_file = input('Arquivo TXT com a lista de websites (deve ser incluído o caminho completo e a extensão):')
-if output_path.startswith('"'):
-	output_path = output_path[1:len(output_path)-1]
 if input_file.startswith('"'):
 	input_file = input_file[1:len(input_file)-1]
 websites = []
