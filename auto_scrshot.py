@@ -67,13 +67,12 @@ def loop_websites(websites_list):
         create_header(website, output_path, file_name, counter)
         counter += 1
 
-
 output_path = 'C:/Users/rodol/Downloads/'
-input_file = input('Arquivo TXT com a lista de websites (deve ser incluído o caminho completo e a extensão):')
+input_file = input('Arquivo TXT com a lista de websites (deve ser incluído o caminho completo e a extensão do arquivo):')
 if input_file.startswith('"'):
     input_file = input_file[1:len(input_file)-1]
 websites = []
 with open(input_file) as websites_file:
     for line in websites_file:
         websites.append(line)
-loop_websites(websites)    
+loop_websites(websites)
